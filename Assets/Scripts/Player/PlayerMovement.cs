@@ -20,6 +20,8 @@ public class PlayerMovement : MonoBehaviour
 
     private AxisPriority lastPriority = AxisPriority.Vertical;
 
+    public bool CanMove { get; set; } = true;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -71,6 +73,12 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (!CanMove)
+        {
+            rb.linearVelocity = Vector2.zero;
+            return;
+        }
+
         rb.linearVelocity = movement * stats.MoveSpeed.Value;
     }
 }
