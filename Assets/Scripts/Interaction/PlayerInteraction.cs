@@ -12,6 +12,8 @@ public class PlayerInteraction : MonoBehaviour
     private PlayerMovement playerMovement;
     private DialogueManager dialogueManager;
 
+    private NPC currentNPC;
+
     private void Update()
     {
         if (dialogueManager != null && dialogueManager.IsDialogueOpen)
@@ -31,6 +33,7 @@ public class PlayerInteraction : MonoBehaviour
         playerMovement.CanMove = true;
 
         FindInteractable();
+        UpdateNPCDirection();
 
         if (Keyboard.current.eKey.wasPressedThisFrame)
         {
@@ -48,6 +51,7 @@ public class PlayerInteraction : MonoBehaviour
 
         IInteractable nearestInteractable = null;
         InteractionPrompt nearestPrompt = null;
+        NPC nearestNPC = null;
 
         float nearestDistance = float.MaxValue;
 
@@ -70,6 +74,9 @@ public class PlayerInteraction : MonoBehaviour
                 nearestInteractable = interactable;
                 nearestPrompt =
                     hit.GetComponent<InteractionPrompt>();
+
+                nearestNPC =
+                    hit.GetComponent<NPC>();
             }
         }
 
@@ -82,12 +89,30 @@ public class PlayerInteraction : MonoBehaviour
 
             currentInteractable = nearestInteractable;
             currentPrompt = nearestPrompt;
+            currentNPC = nearestNPC;
 
             if (currentPrompt != null)
             {
                 currentPrompt.Show();
             }
         }
+    }
+
+    private void UpdateNPCDirection()
+    {
+        if (currentNPC == null)
+            return;
+
+        NPCAnimator npcAnimator =
+            currentNPC.GetComponentInChildren<NPCAnimator>();
+
+        if (npcAnimator == null)
+            return;
+
+        npcAnimator.FacePlayer(
+            transform,
+            currentNPC.transform
+        );
     }
 
     private void HideCurrentPrompt()
