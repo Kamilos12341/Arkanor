@@ -36,6 +36,8 @@ public class Health : MonoBehaviour
 
         OnHealthChanged?.Invoke(currentHealth, (int)stats.MaxHealth.Value);
 
+        Debug.Log($"Player otrzymał {finalDamage} obrażeń");
+
         if (IsDead)
             OnDeath?.Invoke();
     }
