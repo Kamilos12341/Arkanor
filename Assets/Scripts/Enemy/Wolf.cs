@@ -18,15 +18,12 @@ public class Wolf : MonoBehaviour
 
     private CharacterStats stats;
 
-    private Health health;
-
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
         stats = GetComponent<CharacterStats>();
-        health = GetComponent<Health>();
     }
 
     private void Start()
@@ -41,16 +38,6 @@ public class Wolf : MonoBehaviour
         else
         {
             Debug.LogWarning("Wolf nie znalazł Playera.");
-        }
-
-        health.OnDeath += Die;
-    }
-
-    private void OnDestroy()
-    {
-        if (health != null)
-        {
-            health.OnDeath -= Die;
         }
     }
 
@@ -107,6 +94,8 @@ public class Wolf : MonoBehaviour
         if (attackTimer > 0f)
             return;
 
+        attackTimer = attackCooldown;
+
         Health playerHealth =
             player.GetComponent<Health>();
 
@@ -122,8 +111,6 @@ public class Wolf : MonoBehaviour
         playerHealth.Damage(
             (int)stats.Attack.Value
         );
-
-        attackTimer = attackCooldown;
 
         Debug.Log(
             $"Wolf zaatakował gracza za {(int)stats.Attack.Value} obrażeń."
@@ -145,14 +132,5 @@ public class Wolf : MonoBehaviour
             transform.position,
             attackRange
         );
-    }
-
-    private void Die()
-    {
-        rb.linearVelocity = Vector2.zero;
-
-        Debug.Log("Wolf umarł.");
-
-        Destroy(gameObject);
     }
 }

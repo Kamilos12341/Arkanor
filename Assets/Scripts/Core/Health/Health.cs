@@ -30,13 +30,16 @@ public class Health : MonoBehaviour
 
     public void Damage(int damage)
     {
+        if (IsDead)
+            return;
+
         int finalDamage = Mathf.Max(1, damage - (int)stats.Defense.Value);
 
         currentHealth = Mathf.Max(0, currentHealth - finalDamage);
 
         OnHealthChanged?.Invoke(currentHealth, (int)stats.MaxHealth.Value);
 
-        Debug.Log($"Player otrzymał {finalDamage} obrażeń");
+        Debug.Log($"{gameObject.name} otrzymał {finalDamage} obrażeń");
 
         if (IsDead)
             OnDeath?.Invoke();

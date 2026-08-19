@@ -14,6 +14,8 @@ public class PlayerInteraction : MonoBehaviour
 
     private NPC currentNPC;
 
+    private PlayerInputActions input;
+
     private void Update()
     {
         if (dialogueManager != null && dialogueManager.IsDialogueOpen)
@@ -22,7 +24,7 @@ public class PlayerInteraction : MonoBehaviour
 
             HideCurrentPrompt();
 
-            if (Keyboard.current.eKey.wasPressedThisFrame)
+            if (input.Player.Interact.WasPressedThisFrame())
             {
                 dialogueManager.NextLine();
             }
@@ -35,7 +37,7 @@ public class PlayerInteraction : MonoBehaviour
         FindInteractable();
         UpdateNPCDirection();
 
-        if (Keyboard.current.eKey.wasPressedThisFrame)
+        if (input.Player.Interact.WasPressedThisFrame())
         {
             Interact();
         }
@@ -145,5 +147,17 @@ public class PlayerInteraction : MonoBehaviour
     {
         playerMovement = GetComponent<PlayerMovement>();
         dialogueManager = FindFirstObjectByType<DialogueManager>();
+
+        input = new PlayerInputActions();
+    }
+
+    private void OnEnable()
+    {
+        input.Enable();
+    }
+
+    private void OnDisable()
+    {
+        input.Disable();
     }
 }

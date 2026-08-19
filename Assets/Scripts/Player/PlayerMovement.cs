@@ -33,10 +33,24 @@ public class PlayerMovement : MonoBehaviour
     private void OnEnable()
     {
         input.Enable();
+
+        input.Player.MoveUp.started += OnMoveUp;
+        input.Player.MoveDown.started += OnMoveDown;
+        input.Player.MoveLeft.started += OnMoveLeft;
+        input.Player.MoveRight.started += OnMoveRight;
+
+        input.Player.Move.performed += OnGamepadMove;
     }
 
     private void OnDisable()
     {
+        input.Player.MoveUp.started -= OnMoveUp;
+        input.Player.MoveDown.started -= OnMoveDown;
+        input.Player.MoveLeft.started -= OnMoveLeft;
+        input.Player.MoveRight.started -= OnMoveRight;
+
+        input.Player.Move.performed -= OnGamepadMove;
+
         input.Disable();
     }
 
@@ -44,22 +58,7 @@ public class PlayerMovement : MonoBehaviour
     {
         Vector2 rawInput = input.Player.Move.ReadValue<Vector2>();
 
-        bool horizontalPressed = rawInput.x != 0;
-        bool verticalPressed = rawInput.y != 0;
-
-        if (Keyboard.current.aKey.wasPressedThisFrame ||
-            Keyboard.current.dKey.wasPressedThisFrame)
-        {
-            lastPriority = AxisPriority.Horizontal;
-        }
-
-        if (Keyboard.current.wKey.wasPressedThisFrame ||
-            Keyboard.current.sKey.wasPressedThisFrame)
-        {
-            lastPriority = AxisPriority.Vertical;
-        }
-
-        if (horizontalPressed && verticalPressed)
+        if (rawInput.x != 0 && rawInput.y != 0)
         {
             movement = lastPriority == AxisPriority.Horizontal
                 ? new Vector2(rawInput.x, 0)
@@ -80,5 +79,42 @@ public class PlayerMovement : MonoBehaviour
         }
 
         rb.linearVelocity = movement * stats.MoveSpeed.Value;
+    }
+
+    private void OnMoveUp(InputAction.CallbackContext context)
+    {
+        lastPriority = AxisPriority.Vertical;
+    }
+
+    private void OnMoveDown(InputAction.CallbackContext context)
+    {
+        lastPriority = AxisPriority.Vertical;
+    }
+
+    private void OnMoveLeft(InputAction.CallbackContext context)
+    {
+        lastPriority = AxisPriority.Horizontal;
+    }
+
+    private void OnMoveRight(InputAction.CallbackContext context)
+    {
+        lastPriority = AxisPriority.Horizontal;
+    }
+
+    private void OnGamepadMove(InputAction.CallbackContext context)
+    {
+        if (context.control.device is not Gamepad)
+            return;
+
+        Vector2 value = context.ReadValue<Vector2>();
+
+        if (Mathf.Abs(value.x) > Mathf.Abs(value.y))
+        {
+            lastPriority = AxisPriority.Horizontal;
+        }
+        else if (Mathf.Abs(value.y) > 0)
+        {
+            lastPriority = AxisPriority.Vertical;
+        }
     }
 }

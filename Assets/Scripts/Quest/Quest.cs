@@ -12,15 +12,20 @@ public class Quest
     public int CurrentAmount;
     public int RequiredAmount;
 
+    public string TargetID;
+
     public Quest(
-        string id,
-        string title,
-        string description,
-        int requiredAmount)
+     string id,
+     string title,
+     string description,
+     string targetID,
+     int requiredAmount)
     {
         ID = id;
         Title = title;
         Description = description;
+
+        TargetID = targetID;
 
         RequiredAmount = requiredAmount;
         CurrentAmount = 0;

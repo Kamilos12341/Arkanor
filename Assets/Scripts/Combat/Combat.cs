@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Windows;
 
 public class Combat : MonoBehaviour
 {
@@ -18,6 +19,8 @@ public class Combat : MonoBehaviour
 
     private Vector2 facingDirection = Vector2.down;
 
+    private PlayerInputActions input;
+
     //private Animator animator;
 
     private void Awake()
@@ -25,6 +28,17 @@ public class Combat : MonoBehaviour
         stats = GetComponent<CharacterStats>();
         playerMovement = GetComponent<PlayerMovement>();
         //animator = GetComponent<Animator>();
+        input = new PlayerInputActions();
+    }
+
+    private void OnEnable()
+    {
+        input.Enable();
+    }
+
+    private void OnDisable()
+    {
+        input.Disable();
     }
 
     private void Update()
@@ -36,7 +50,7 @@ public class Combat : MonoBehaviour
             attackTimer -= Time.deltaTime;
         }
 
-        if (Keyboard.current.spaceKey.wasPressedThisFrame)
+        if (input.Player.Attack.WasPressedThisFrame())
         {
             TryAttack();
         }
@@ -137,4 +151,6 @@ public class Combat : MonoBehaviour
             attackSize
         );
     }
+
+
 }

@@ -14,6 +14,9 @@ GameObject:
   - component: {fileID: 1186111342310936333}
   - component: {fileID: 2058483394934115758}
   - component: {fileID: 8431171525746189907}
+  - component: {fileID: 2196111519840947839}
+  - component: {fileID: 6955216831655448333}
+  - component: {fileID: 7327121179263021976}
   m_Layer: 0
   m_Name: Wolf
   m_TagString: Untagged
@@ -194,6 +197,48 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21d5868a5ac50734b85e09c2989a5288, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Wolf
-  moveSpeed: 2
   detectionRange: 5
-  stopDistance: 1.2
+  attackRange: 1.2
+  attackCooldown: 1.5
+--- !u!114 &2196111519840947839
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6265182610475498684}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 513d582f0301c2b4b89efc0a8795f563, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Health
+  stats: {fileID: 0}
+--- !u!114 &6955216831655448333
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6265182610475498684}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d6b8c2f356f3594fbbc2039c87c78cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CharacterStats
+  maxHealth: 30
+  attack: 10
+  defense: 2
+  moveSpeed: 2
+--- !u!114 &7327121179263021976
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6265182610475498684}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 975e8e788e9c63d40bcbe74c203cf83e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Enemy
+  enemyId: wolf

@@ -7,6 +7,7 @@ public class QuestManager : MonoBehaviour
 
     private Dictionary<string, Quest> quests = new();
 
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -29,6 +30,7 @@ public class QuestManager : MonoBehaviour
             "kill_wolves_01",
             "Wilki na drodze",
             "Pokonaj 3 wilki, które zagrażają podróżnym.",
+            "wolf",
             3
         );
 
@@ -84,5 +86,52 @@ public class QuestManager : MonoBehaviour
             $"Postęp questa {quest.Title}: " +
             $"{quest.CurrentAmount}/{quest.RequiredAmount}"
         );
+    }
+
+    public bool CompleteQuest(string id)
+    {
+        Quest quest = GetQuest(id);
+
+        if (quest == null)
+            return false;
+
+        if (quest.State != QuestState.Completed)
+            return false;
+
+        quest.State = QuestState.Rewarded;
+
+        Debug.Log($"Quest ukończony i odebrany: {quest.Title}");
+
+        return true;
+    }
+
+    private void OnEnable()
+    {
+        Enemy.OnDied += HandleEnemyDeath;
+    }
+
+    private void OnDisable()
+    {
+        Enemy.OnDied -= HandleEnemyDeath;
+    }
+
+    private void HandleEnemyDeath(string enemyId)
+    {
+
+        foreach (Quest quest in quests.Values)
+        {
+            if (quest.State != QuestState.Active)
+                continue;
+
+            if (quest.TargetID != enemyId)
+                continue;
+
+            quest.AddProgress(1);
+
+            Debug.Log(
+                $"Postęp questa {quest.Title}: " +
+                $"{quest.CurrentAmount}/{quest.RequiredAmount}"
+            );
+        }
     }
 }

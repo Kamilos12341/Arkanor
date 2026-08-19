@@ -57,14 +57,34 @@ public class NPC : MonoBehaviour, IInteractable
             npcAnimator.FaceDirection(direction);
         }
 
+        Quest quest = null;
+
+        if (!string.IsNullOrEmpty(questToStartID))
+        {
+            quest = QuestManager.Instance.GetQuest(questToStartID);
+        }
+
+        bool shouldCompleteQuest =
+            quest != null &&
+            quest.State == QuestState.Completed;
+
         dialogueManager.StartDialogue(
             npcName,
-            GetCurrentDialogue()
+            GetCurrentDialogue(),
+            shouldCompleteQuest ? CompleteQuest : null
         );
 
         if (!string.IsNullOrEmpty(questToStartID))
         {
             QuestManager.Instance.StartQuest(questToStartID);
+        }
+    }
+
+    private void CompleteQuest()
+    {
+        if (QuestManager.Instance.CompleteQuest(questToStartID))
+        {
+            Debug.Log($"Quest odebrany przez {npcName}.");
         }
     }
 

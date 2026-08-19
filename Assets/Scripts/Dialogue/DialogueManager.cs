@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 
@@ -10,6 +11,8 @@ public class DialogueManager : MonoBehaviour
     private string[] dialogueLines;
     private int currentLine;
 
+    private Action onDialogueFinished;
+
     public bool IsDialogueOpen { get; private set; }
 
     private void Start()
@@ -17,13 +20,18 @@ public class DialogueManager : MonoBehaviour
         dialogueWindow.SetActive(false);
     }
 
-    public void StartDialogue(string npcName, string[] lines)
+    public void StartDialogue(
+        string npcName,
+        string[] lines,
+        Action onFinished = null)
     {
         if (lines == null || lines.Length == 0)
             return;
 
         dialogueLines = lines;
         currentLine = 0;
+
+        onDialogueFinished = onFinished;
 
         npcNameText.text = npcName;
         dialogueText.text = dialogueLines[currentLine];
@@ -52,5 +60,10 @@ public class DialogueManager : MonoBehaviour
     {
         dialogueWindow.SetActive(false);
         IsDialogueOpen = false;
+
+        Action callback = onDialogueFinished;
+        onDialogueFinished = null;
+
+        callback?.Invoke();
     }
 }
