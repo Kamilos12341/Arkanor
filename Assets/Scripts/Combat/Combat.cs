@@ -1,6 +1,4 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.Windows;
 
 public class Combat : MonoBehaviour
 {
@@ -16,10 +14,9 @@ public class Combat : MonoBehaviour
 
     private CharacterStats stats;
     private PlayerMovement playerMovement;
+    private PlayerInputHandler input;
 
     private Vector2 facingDirection = Vector2.down;
-
-    private PlayerInputActions input;
 
     //private Animator animator;
 
@@ -27,18 +24,9 @@ public class Combat : MonoBehaviour
     {
         stats = GetComponent<CharacterStats>();
         playerMovement = GetComponent<PlayerMovement>();
+        input = GetComponent<PlayerInputHandler>();
+
         //animator = GetComponent<Animator>();
-        input = new PlayerInputActions();
-    }
-
-    private void OnEnable()
-    {
-        input.Enable();
-    }
-
-    private void OnDisable()
-    {
-        input.Disable();
     }
 
     private void Update()
@@ -50,7 +38,7 @@ public class Combat : MonoBehaviour
             attackTimer -= Time.deltaTime;
         }
 
-        if (input.Player.Attack.WasPressedThisFrame())
+        if (input.Attack.WasPressedThisFrame())
         {
             TryAttack();
         }
@@ -70,6 +58,8 @@ public class Combat : MonoBehaviour
     {
         if (attackTimer > 0f)
             return;
+
+        attackTimer = attackCooldown;
 
         Vector2 attackCenter =
             (Vector2)transform.position +
@@ -108,18 +98,14 @@ public class Combat : MonoBehaviour
                 (int)stats.Attack.Value
             );
 
-            //animator.SetTrigger("Attack");
-
-            attackTimer = attackCooldown;
-
             Debug.Log(
                 $"{gameObject.name} zaatakował " +
                 $"{hit.gameObject.name} za " +
                 $"{(int)stats.Attack.Value} obrażeń."
             );
-
-            break;
         }
+
+        // animator.SetTrigger("Attack");
     }
 
     private void OnDrawGizmosSelected()
@@ -151,6 +137,4 @@ public class Combat : MonoBehaviour
             attackSize
         );
     }
-
-
 }

@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class PlayerInteraction : MonoBehaviour
 {
@@ -10,11 +9,10 @@ public class PlayerInteraction : MonoBehaviour
     private InteractionPrompt currentPrompt;
 
     private PlayerMovement playerMovement;
+    private PlayerInputHandler input;
     private DialogueManager dialogueManager;
 
     private NPC currentNPC;
-
-    private PlayerInputActions input;
 
     private void Update()
     {
@@ -24,7 +22,7 @@ public class PlayerInteraction : MonoBehaviour
 
             HideCurrentPrompt();
 
-            if (input.Player.Interact.WasPressedThisFrame())
+            if (input.Interact.WasPressedThisFrame())
             {
                 dialogueManager.NextLine();
             }
@@ -37,7 +35,7 @@ public class PlayerInteraction : MonoBehaviour
         FindInteractable();
         UpdateNPCDirection();
 
-        if (input.Player.Interact.WasPressedThisFrame())
+        if (input.Interact.WasPressedThisFrame())
         {
             Interact();
         }
@@ -74,6 +72,7 @@ public class PlayerInteraction : MonoBehaviour
             {
                 nearestDistance = distance;
                 nearestInteractable = interactable;
+
                 nearestPrompt =
                     hit.GetComponent<InteractionPrompt>();
 
@@ -146,18 +145,7 @@ public class PlayerInteraction : MonoBehaviour
     private void Awake()
     {
         playerMovement = GetComponent<PlayerMovement>();
+        input = GetComponent<PlayerInputHandler>();
         dialogueManager = FindFirstObjectByType<DialogueManager>();
-
-        input = new PlayerInputActions();
-    }
-
-    private void OnEnable()
-    {
-        input.Enable();
-    }
-
-    private void OnDisable()
-    {
-        input.Disable();
     }
 }

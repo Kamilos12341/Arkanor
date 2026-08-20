@@ -15,34 +15,25 @@ public class NPC : MonoBehaviour, IInteractable
     [SerializeField]
     private NPCDialogue completedQuestDialogue;
 
-    /*
-    
-    {
-      "Witaj, wędrowcze. Nieczęsto widuję tu nowych ludzi.",
-        "Jeśli zmierzasz do Brzezin, zachowaj ostrożność.",
-        "Wilki ostatnio podchodzą coraz bliżej drogi." 
-    };
-    */
-
     [SerializeField] private string questToStartID;
 
     private DialogueManager dialogueManager;
-
     private NPCAnimator npcAnimator;
-
 
     private void Start()
     {
         dialogueManager = FindFirstObjectByType<DialogueManager>();
         npcAnimator = GetComponentInChildren<NPCAnimator>();
-
     }
 
     public void Interact()
     {
         if (dialogueManager == null)
         {
-            Debug.LogWarning("Nie znaleziono DialogueManager.");
+            Debug.LogWarning(
+                $"NPC '{npcName}': Nie znaleziono DialogueManager."
+            );
+
             return;
         }
 
@@ -61,7 +52,17 @@ public class NPC : MonoBehaviour, IInteractable
 
         if (!string.IsNullOrEmpty(questToStartID))
         {
-            quest = QuestManager.Instance.GetQuest(questToStartID);
+            if (QuestManager.Instance == null)
+            {
+                Debug.LogWarning(
+                    $"NPC '{npcName}': Nie znaleziono QuestManager."
+                );
+            }
+            else
+            {
+                quest =
+                    QuestManager.Instance.GetQuest(questToStartID);
+            }
         }
 
         bool shouldCompleteQuest =
@@ -71,17 +72,43 @@ public class NPC : MonoBehaviour, IInteractable
         dialogueManager.StartDialogue(
             npcName,
             GetCurrentDialogue(),
-            shouldCompleteQuest ? CompleteQuest : null
+            shouldCompleteQuest ? CompleteQuest : StartQuestAfterDialogue
         );
+    }
 
-        if (!string.IsNullOrEmpty(questToStartID))
+    private void StartQuestAfterDialogue()
+    {
+        if (string.IsNullOrEmpty(questToStartID))
+            return;
+
+        if (QuestManager.Instance == null)
         {
-            QuestManager.Instance.StartQuest(questToStartID);
+            Debug.LogWarning(
+                $"NPC '{npcName}': Nie znaleziono QuestManager. " +
+                $"Nie można rozpocząć questa '{questToStartID}'."
+            );
+
+            return;
         }
+
+        QuestManager.Instance.StartQuest(questToStartID);
     }
 
     private void CompleteQuest()
     {
+        if (string.IsNullOrEmpty(questToStartID))
+            return;
+
+        if (QuestManager.Instance == null)
+        {
+            Debug.LogWarning(
+                $"NPC '{npcName}': Nie znaleziono QuestManager. " +
+                $"Nie można ukończyć questa '{questToStartID}'."
+            );
+
+            return;
+        }
+
         if (QuestManager.Instance.CompleteQuest(questToStartID))
         {
             Debug.Log($"Quest odebrany przez {npcName}.");
@@ -95,7 +122,17 @@ public class NPC : MonoBehaviour, IInteractable
             return defaultDialogue.lines;
         }
 
-        Quest quest = QuestManager.Instance.GetQuest(questToStartID);
+        if (QuestManager.Instance == null)
+        {
+            Debug.LogWarning(
+                $"NPC '{npcName}': Nie znaleziono QuestManager."
+            );
+
+            return defaultDialogue.lines;
+        }
+
+        Quest quest =
+            QuestManager.Instance.GetQuest(questToStartID);
 
         if (quest == null)
         {
@@ -120,5 +157,4 @@ public class NPC : MonoBehaviour, IInteractable
                 return defaultDialogue.lines;
         }
     }
-
 }

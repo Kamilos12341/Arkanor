@@ -6,7 +6,7 @@ public class PlayerMovement : MonoBehaviour
 {
     private Rigidbody2D rb;
     private CharacterStats stats;
-    private PlayerInputActions input;
+    private PlayerInputHandler input;
 
     private Vector2 movement;
 
@@ -26,37 +26,38 @@ public class PlayerMovement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         stats = GetComponent<CharacterStats>();
-
-        input = new PlayerInputActions();
+        input = GetComponent<PlayerInputHandler>();
     }
 
     private void OnEnable()
     {
-        input.Enable();
+        if (input == null)
+            return;
 
-        input.Player.MoveUp.started += OnMoveUp;
-        input.Player.MoveDown.started += OnMoveDown;
-        input.Player.MoveLeft.started += OnMoveLeft;
-        input.Player.MoveRight.started += OnMoveRight;
+        input.MoveUp.started += OnMoveUp;
+        input.MoveDown.started += OnMoveDown;
+        input.MoveLeft.started += OnMoveLeft;
+        input.MoveRight.started += OnMoveRight;
 
-        input.Player.Move.performed += OnGamepadMove;
+        input.Move.performed += OnGamepadMove;
     }
 
     private void OnDisable()
     {
-        input.Player.MoveUp.started -= OnMoveUp;
-        input.Player.MoveDown.started -= OnMoveDown;
-        input.Player.MoveLeft.started -= OnMoveLeft;
-        input.Player.MoveRight.started -= OnMoveRight;
+        if (input == null)
+            return;
 
-        input.Player.Move.performed -= OnGamepadMove;
+        input.MoveUp.started -= OnMoveUp;
+        input.MoveDown.started -= OnMoveDown;
+        input.MoveLeft.started -= OnMoveLeft;
+        input.MoveRight.started -= OnMoveRight;
 
-        input.Disable();
+        input.Move.performed -= OnGamepadMove;
     }
 
     private void Update()
     {
-        Vector2 rawInput = input.Player.Move.ReadValue<Vector2>();
+        Vector2 rawInput = input.Move.ReadValue<Vector2>();
 
         if (rawInput.x != 0 && rawInput.y != 0)
         {
@@ -78,7 +79,8 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
-        rb.linearVelocity = movement * stats.MoveSpeed.Value;
+        rb.linearVelocity =
+            movement * stats.MoveSpeed.Value;
     }
 
     private void OnMoveUp(InputAction.CallbackContext context)
