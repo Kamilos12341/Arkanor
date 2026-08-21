@@ -26,6 +26,7 @@ namespace Arkanor.Player
         public bool CanMove { get; set; } = true;
 
         private void Awake()
+     
         {
             rb = GetComponent<Rigidbody2D>();
             stats = GetComponent<CharacterStats>();

@@ -1,6 +1,7 @@
 using UnityEngine;
+using Arkanor.Characters;
 
-namespace Arkanor.Characters
+namespace Arkanor.Enemies
 {
     public class Wolf : MonoBehaviour
     {

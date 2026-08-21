@@ -1,7 +1,8 @@
+using Arkanor.Characters;
 using System;
 using UnityEngine;
 
-namespace Arkanor.Characters
+namespace Arkanor.Enemies
 {
     public class Enemy : MonoBehaviour
     {
