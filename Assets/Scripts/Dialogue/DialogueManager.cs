@@ -4,7 +4,6 @@ using UnityEngine;
 
 namespace Arkanor.Dialogue
 {
-
     public class DialogueManager : MonoBehaviour
     {
         [SerializeField] private GameObject dialogueWindow;
@@ -17,6 +16,9 @@ namespace Arkanor.Dialogue
         private Action onDialogueFinished;
 
         public bool IsDialogueOpen { get; private set; }
+
+        public event Action DialogueOpened;
+        public event Action DialogueClosed;
 
         private void Start()
         {
@@ -41,6 +43,8 @@ namespace Arkanor.Dialogue
 
             dialogueWindow.SetActive(true);
             IsDialogueOpen = true;
+
+            DialogueOpened?.Invoke();
         }
 
         public void NextLine()
@@ -61,8 +65,13 @@ namespace Arkanor.Dialogue
 
         public void CloseDialogue()
         {
+            if (!IsDialogueOpen)
+                return;
+
             dialogueWindow.SetActive(false);
             IsDialogueOpen = false;
+
+            DialogueClosed?.Invoke();
 
             Action callback = onDialogueFinished;
             onDialogueFinished = null;

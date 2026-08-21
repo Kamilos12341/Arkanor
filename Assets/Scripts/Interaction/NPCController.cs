@@ -42,17 +42,6 @@ namespace Arkanor.NPC
                 return;
             }
 
-            GameObject playerObject =
-                GameObject.FindGameObjectWithTag("Player");
-
-            if (playerObject != null && npcAnimator != null)
-            {
-                Vector2 direction =
-                    playerObject.transform.position - transform.position;
-
-                npcAnimator.FaceDirection(direction);
-            }
-
             Quest quest = null;
 
             if (!string.IsNullOrEmpty(questToStartID))
@@ -77,7 +66,9 @@ namespace Arkanor.NPC
             dialogueManager.StartDialogue(
                 npcName,
                 GetCurrentDialogue(),
-                shouldCompleteQuest ? CompleteQuest : StartQuestAfterDialogue
+                shouldCompleteQuest
+                    ? CompleteQuest
+                    : StartQuestAfterDialogue
             );
         }
 

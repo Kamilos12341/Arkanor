@@ -21,6 +21,8 @@ namespace Arkanor.Enemies
 
         private CharacterStats stats;
 
+        private Vector2 movement;
+
         private void Awake()
         {
             rb = GetComponent<Rigidbody2D>();
@@ -47,7 +49,10 @@ namespace Arkanor.Enemies
         private void Update()
         {
             if (player == null)
+            {
+                movement = Vector2.zero;
                 return;
+            }
 
             float distance =
                 Vector2.Distance(transform.position, player.position);
@@ -69,13 +74,18 @@ namespace Arkanor.Enemies
             }
         }
 
+        private void FixedUpdate()
+        {
+            rb.linearVelocity =
+                movement * stats.MoveSpeed.Value;
+        }
+
         private void MoveTowardsPlayer()
         {
             Vector2 direction =
                 (player.position - transform.position).normalized;
 
-            rb.linearVelocity =
-                direction * stats.MoveSpeed.Value;
+            movement = direction;
 
             animator.SetBool("IsMoving", true);
 
@@ -87,7 +97,7 @@ namespace Arkanor.Enemies
 
         private void StopMoving()
         {
-            rb.linearVelocity = Vector2.zero;
+            movement = Vector2.zero;
 
             animator.SetBool("IsMoving", false);
         }

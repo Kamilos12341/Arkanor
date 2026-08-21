@@ -5,7 +5,6 @@ using Arkanor.UI;
 
 namespace Arkanor.Player
 {
-
     public class PlayerInteraction : MonoBehaviour
     {
         [SerializeField] private float interactionRadius = 1.2f;
@@ -20,12 +19,42 @@ namespace Arkanor.Player
 
         private NPCController currentNPC;
 
+        private void Awake()
+        {
+            playerMovement = GetComponent<PlayerMovement>();
+            input = GetComponent<PlayerInputHandler>();
+            dialogueManager = FindFirstObjectByType<DialogueManager>();
+        }
+
+        private void Start()
+        {
+            if (dialogueManager == null)
+            {
+                Debug.LogError(
+                    "PlayerInteraction nie znalazł DialogueManager."
+                );
+
+                return;
+            }
+
+            dialogueManager.DialogueOpened += OnDialogueOpened;
+            dialogueManager.DialogueClosed += OnDialogueClosed;
+        }
+
+        private void OnDestroy()
+        {
+            if (dialogueManager == null)
+                return;
+
+            dialogueManager.DialogueOpened -= OnDialogueOpened;
+            dialogueManager.DialogueClosed -= OnDialogueClosed;
+        }
+
         private void Update()
         {
-            if (dialogueManager != null && dialogueManager.IsDialogueOpen)
+            if (dialogueManager != null &&
+                dialogueManager.IsDialogueOpen)
             {
-                playerMovement.CanMove = false;
-
                 HideCurrentPrompt();
 
                 if (input.Interact.WasPressedThisFrame())
@@ -36,8 +65,6 @@ namespace Arkanor.Player
                 return;
             }
 
-            playerMovement.CanMove = true;
-
             FindInteractable();
             UpdateNPCDirection();
 
@@ -45,6 +72,18 @@ namespace Arkanor.Player
             {
                 Interact();
             }
+        }
+
+        private void OnDialogueOpened()
+        {
+            playerMovement.CanMove = false;
+
+            HideCurrentPrompt();
+        }
+
+        private void OnDialogueClosed()
+        {
+            playerMovement.CanMove = true;
         }
 
         private void FindInteractable()
@@ -146,13 +185,6 @@ namespace Arkanor.Player
                 transform.position,
                 interactionRadius
             );
-        }
-
-        private void Awake()
-        {
-            playerMovement = GetComponent<PlayerMovement>();
-            input = GetComponent<PlayerInputHandler>();
-            dialogueManager = FindFirstObjectByType<DialogueManager>();
         }
     }
 }
