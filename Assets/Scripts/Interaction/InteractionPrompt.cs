@@ -1,17 +1,21 @@
 using TMPro;
 using UnityEngine;
 
-public class InteractionPrompt : MonoBehaviour
+namespace Arkanor.UI
 {
-    [SerializeField] private GameObject prompt;
 
-    public void Show()
+    public class InteractionPrompt : MonoBehaviour
     {
-        prompt.SetActive(true);
-    }
+        [SerializeField] private GameObject prompt;
 
-    public void Hide()
-    {
-        prompt.SetActive(false);
+        public void Show()
+        {
+            prompt.SetActive(true);
+        }
+
+        public void Hide()
+        {
+            prompt.SetActive(false);
+        }
     }
 }

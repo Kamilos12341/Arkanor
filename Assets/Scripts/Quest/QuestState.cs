@@ -1,7 +1,10 @@
-public enum QuestState
+namespace Arkanor.Quests
 {
-    NotStarted,
-    Active,
-    Completed,
-    Rewarded
+    public enum QuestState
+    {
+        NotStarted,
+        Active,
+        Completed,
+        Rewarded
+    }
 }

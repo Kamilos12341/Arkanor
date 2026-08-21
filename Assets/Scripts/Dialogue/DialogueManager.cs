@@ -2,68 +2,72 @@ using System;
 using TMPro;
 using UnityEngine;
 
-public class DialogueManager : MonoBehaviour
+namespace Arkanor.Dialogue
 {
-    [SerializeField] private GameObject dialogueWindow;
-    [SerializeField] private TMP_Text npcNameText;
-    [SerializeField] private TMP_Text dialogueText;
 
-    private string[] dialogueLines;
-    private int currentLine;
-
-    private Action onDialogueFinished;
-
-    public bool IsDialogueOpen { get; private set; }
-
-    private void Start()
+    public class DialogueManager : MonoBehaviour
     {
-        dialogueWindow.SetActive(false);
-    }
+        [SerializeField] private GameObject dialogueWindow;
+        [SerializeField] private TMP_Text npcNameText;
+        [SerializeField] private TMP_Text dialogueText;
 
-    public void StartDialogue(
-        string npcName,
-        string[] lines,
-        Action onFinished = null)
-    {
-        if (lines == null || lines.Length == 0)
-            return;
+        private string[] dialogueLines;
+        private int currentLine;
 
-        dialogueLines = lines;
-        currentLine = 0;
+        private Action onDialogueFinished;
 
-        onDialogueFinished = onFinished;
+        public bool IsDialogueOpen { get; private set; }
 
-        npcNameText.text = npcName;
-        dialogueText.text = dialogueLines[currentLine];
-
-        dialogueWindow.SetActive(true);
-        IsDialogueOpen = true;
-    }
-
-    public void NextLine()
-    {
-        if (!IsDialogueOpen)
-            return;
-
-        currentLine++;
-
-        if (currentLine >= dialogueLines.Length)
+        private void Start()
         {
-            CloseDialogue();
-            return;
+            dialogueWindow.SetActive(false);
         }
 
-        dialogueText.text = dialogueLines[currentLine];
-    }
+        public void StartDialogue(
+            string npcName,
+            string[] lines,
+            Action onFinished = null)
+        {
+            if (lines == null || lines.Length == 0)
+                return;
 
-    public void CloseDialogue()
-    {
-        dialogueWindow.SetActive(false);
-        IsDialogueOpen = false;
+            dialogueLines = lines;
+            currentLine = 0;
 
-        Action callback = onDialogueFinished;
-        onDialogueFinished = null;
+            onDialogueFinished = onFinished;
 
-        callback?.Invoke();
+            npcNameText.text = npcName;
+            dialogueText.text = dialogueLines[currentLine];
+
+            dialogueWindow.SetActive(true);
+            IsDialogueOpen = true;
+        }
+
+        public void NextLine()
+        {
+            if (!IsDialogueOpen)
+                return;
+
+            currentLine++;
+
+            if (currentLine >= dialogueLines.Length)
+            {
+                CloseDialogue();
+                return;
+            }
+
+            dialogueText.text = dialogueLines[currentLine];
+        }
+
+        public void CloseDialogue()
+        {
+            dialogueWindow.SetActive(false);
+            IsDialogueOpen = false;
+
+            Action callback = onDialogueFinished;
+            onDialogueFinished = null;
+
+            callback?.Invoke();
+        }
     }
 }

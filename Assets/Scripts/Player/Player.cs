@@ -1,4 +1,5 @@
 using UnityEngine;
+using Arkanor.Characters;
 
 public class Player : MonoBehaviour
 {

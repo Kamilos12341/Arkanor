@@ -1,49 +1,53 @@
 using System;
 
-[Serializable]
-public class Quest
+namespace Arkanor.Quests
 {
-    public string ID;
-    public string Title;
-    public string Description;
 
-    public QuestState State;
-
-    public int CurrentAmount;
-    public int RequiredAmount;
-
-    public string TargetID;
-
-    public Quest(
-     string id,
-     string title,
-     string description,
-     string targetID,
-     int requiredAmount)
+    [Serializable]
+    public class Quest
     {
-        ID = id;
-        Title = title;
-        Description = description;
+        public string ID;
+        public string Title;
+        public string Description;
 
-        TargetID = targetID;
+        public QuestState State;
 
-        RequiredAmount = requiredAmount;
-        CurrentAmount = 0;
+        public int CurrentAmount;
+        public int RequiredAmount;
 
-        State = QuestState.NotStarted;
-    }
+        public string TargetID;
 
-    public void AddProgress(int amount)
-    {
-        if (State != QuestState.Active)
-            return;
-
-        CurrentAmount += amount;
-
-        if (CurrentAmount >= RequiredAmount)
+        public Quest(
+         string id,
+         string title,
+         string description,
+         string targetID,
+         int requiredAmount)
         {
-            CurrentAmount = RequiredAmount;
-            State = QuestState.Completed;
+            ID = id;
+            Title = title;
+            Description = description;
+
+            TargetID = targetID;
+
+            RequiredAmount = requiredAmount;
+            CurrentAmount = 0;
+
+            State = QuestState.NotStarted;
+        }
+
+        public void AddProgress(int amount)
+        {
+            if (State != QuestState.Active)
+                return;
+
+            CurrentAmount += amount;
+
+            if (CurrentAmount >= RequiredAmount)
+            {
+                CurrentAmount = RequiredAmount;
+                State = QuestState.Completed;
+            }
         }
     }
 }

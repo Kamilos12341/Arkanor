@@ -1,136 +1,139 @@
 using UnityEngine;
 
-public class Wolf : MonoBehaviour
+namespace Arkanor.Characters
 {
-    [Header("Detection")]
-    [SerializeField] private float detectionRange = 5f;
-
-    [Header("Attack")]
-    [SerializeField] private float attackRange = 1.2f;
-    [SerializeField] private float attackCooldown = 1.5f;
-
-    private float attackTimer;
-
-    private Transform player;
-    private Rigidbody2D rb;
-    private SpriteRenderer spriteRenderer;
-    private Animator animator;
-
-    private CharacterStats stats;
-
-    private void Awake()
+    public class Wolf : MonoBehaviour
     {
-        rb = GetComponent<Rigidbody2D>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        animator = GetComponent<Animator>();
-        stats = GetComponent<CharacterStats>();
-    }
+        [Header("Detection")]
+        [SerializeField] private float detectionRange = 5f;
 
-    private void Start()
-    {
-        GameObject playerObject =
-            GameObject.FindGameObjectWithTag("Player");
+        [Header("Attack")]
+        [SerializeField] private float attackRange = 1.2f;
+        [SerializeField] private float attackCooldown = 1.5f;
 
-        if (playerObject != null)
+        private float attackTimer;
+
+        private Transform player;
+        private Rigidbody2D rb;
+        private SpriteRenderer spriteRenderer;
+        private Animator animator;
+
+        private CharacterStats stats;
+
+        private void Awake()
         {
-            player = playerObject.transform;
+            rb = GetComponent<Rigidbody2D>();
+            spriteRenderer = GetComponent<SpriteRenderer>();
+            animator = GetComponent<Animator>();
+            stats = GetComponent<CharacterStats>();
         }
-        else
+
+        private void Start()
         {
-            Debug.LogWarning("Wolf nie znalazł Playera.");
+            GameObject playerObject =
+                GameObject.FindGameObjectWithTag("Player");
+
+            if (playerObject != null)
+            {
+                player = playerObject.transform;
+            }
+            else
+            {
+                Debug.LogWarning("Wolf nie znalazł Playera.");
+            }
         }
-    }
 
-    private void Update()
-    {
-        if (player == null)
-            return;
-
-        float distance =
-            Vector2.Distance(transform.position, player.position);
-
-        attackTimer -= Time.deltaTime;
-
-        if (distance <= attackRange)
+        private void Update()
         {
-            StopMoving();
-            TryAttack();
+            if (player == null)
+                return;
+
+            float distance =
+                Vector2.Distance(transform.position, player.position);
+
+            attackTimer -= Time.deltaTime;
+
+            if (distance <= attackRange)
+            {
+                StopMoving();
+                TryAttack();
+            }
+            else if (distance <= detectionRange)
+            {
+                MoveTowardsPlayer();
+            }
+            else
+            {
+                StopMoving();
+            }
         }
-        else if (distance <= detectionRange)
+
+        private void MoveTowardsPlayer()
         {
-            MoveTowardsPlayer();
+            Vector2 direction =
+                (player.position - transform.position).normalized;
+
+            rb.linearVelocity =
+                direction * stats.MoveSpeed.Value;
+
+            animator.SetBool("IsMoving", true);
+
+            if (direction.x != 0)
+            {
+                spriteRenderer.flipX = direction.x > 0;
+            }
         }
-        else
+
+        private void StopMoving()
         {
-            StopMoving();
+            rb.linearVelocity = Vector2.zero;
+
+            animator.SetBool("IsMoving", false);
         }
-    }
 
-    private void MoveTowardsPlayer()
-    {
-        Vector2 direction =
-            (player.position - transform.position).normalized;
-
-        rb.linearVelocity =
-            direction * stats.MoveSpeed.Value;
-
-        animator.SetBool("IsMoving", true);
-
-        if (direction.x != 0)
+        private void TryAttack()
         {
-            spriteRenderer.flipX = direction.x > 0;
-        }
-    }
+            if (attackTimer > 0f)
+                return;
 
-    private void StopMoving()
-    {
-        rb.linearVelocity = Vector2.zero;
+            attackTimer = attackCooldown;
 
-        animator.SetBool("IsMoving", false);
-    }
+            Health playerHealth =
+                player.GetComponent<Health>();
 
-    private void TryAttack()
-    {
-        if (attackTimer > 0f)
-            return;
+            if (playerHealth == null)
+            {
+                Debug.LogWarning(
+                    "Player nie posiada komponentu Health."
+                );
 
-        attackTimer = attackCooldown;
+                return;
+            }
 
-        Health playerHealth =
-            player.GetComponent<Health>();
-
-        if (playerHealth == null)
-        {
-            Debug.LogWarning(
-                "Player nie posiada komponentu Health."
+            playerHealth.Damage(
+                (int)stats.Attack.Value
             );
 
-            return;
+            Debug.Log(
+                $"Wolf zaatakował gracza za {(int)stats.Attack.Value} obrażeń."
+            );
         }
 
-        playerHealth.Damage(
-            (int)stats.Attack.Value
-        );
+        private void OnDrawGizmosSelected()
+        {
+            Gizmos.color = Color.yellow;
 
-        Debug.Log(
-            $"Wolf zaatakował gracza za {(int)stats.Attack.Value} obrażeń."
-        );
-    }
+            Gizmos.DrawWireSphere(
+                transform.position,
+                detectionRange
+            );
 
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.yellow;
+            Gizmos.color = Color.red;
 
-        Gizmos.DrawWireSphere(
-            transform.position,
-            detectionRange
-        );
-
-        Gizmos.color = Color.red;
-
-        Gizmos.DrawWireSphere(
-            transform.position,
-            attackRange
-        );
+            Gizmos.DrawWireSphere(
+                transform.position,
+                attackRange
+            );
+        }
     }
 }

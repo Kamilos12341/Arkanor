@@ -1,36 +1,40 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Animator))]
-public class PlayerAnimation : MonoBehaviour
+namespace Arkanor.Player
 {
-    private Animator animator;
-    private PlayerMovement movement;
 
-    private Vector2 lastDirection = Vector2.down;
-
-    private void Awake()
+    [RequireComponent(typeof(Animator))]
+    public class PlayerAnimation : MonoBehaviour
     {
-        animator = GetComponent<Animator>();
-        movement = GetComponent<PlayerMovement>();
-    }
+        private Animator animator;
+        private PlayerMovement movement;
 
-    private void Update()
-    {
-        Vector2 move = movement.Movement;
+        private Vector2 lastDirection = Vector2.down;
 
-        bool isMoving = move != Vector2.zero;
-
-        animator.SetBool("IsMoving", isMoving);
-
-        animator.SetFloat("MoveX", move.x);
-        animator.SetFloat("MoveY", move.y);
-
-        if (isMoving)
+        private void Awake()
         {
-            lastDirection = move;
+            animator = GetComponent<Animator>();
+            movement = GetComponent<PlayerMovement>();
+        }
 
-            animator.SetFloat("LastMoveX", lastDirection.x);
-            animator.SetFloat("LastMoveY", lastDirection.y);
+        private void Update()
+        {
+            Vector2 move = movement.Movement;
+
+            bool isMoving = move != Vector2.zero;
+
+            animator.SetBool("IsMoving", isMoving);
+
+            animator.SetFloat("MoveX", move.x);
+            animator.SetFloat("MoveY", move.y);
+
+            if (isMoving)
+            {
+                lastDirection = move;
+
+                animator.SetFloat("LastMoveX", lastDirection.x);
+                animator.SetFloat("LastMoveY", lastDirection.y);
+            }
         }
     }
 }

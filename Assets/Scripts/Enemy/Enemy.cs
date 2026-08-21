@@ -1,44 +1,47 @@
 using System;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour
+namespace Arkanor.Characters
 {
-    [SerializeField] private string enemyId = "enemy";
-
-    public string EnemyId => enemyId;
-
-    public static event Action<string> OnDied;
-
-    private Health health;
-
-    private void Awake()
+    public class Enemy : MonoBehaviour
     {
-        health = GetComponent<Health>();
+        [SerializeField] private string enemyId = "enemy";
 
-        if (health == null)
+        public string EnemyId => enemyId;
+
+        public static event Action<string> OnDied;
+
+        private Health health;
+
+        private void Awake()
         {
-            Debug.LogError(
-                $"{gameObject.name} nie posiada komponentu Health."
-            );
+            health = GetComponent<Health>();
 
-            return;
+            if (health == null)
+            {
+                Debug.LogError(
+                    $"{gameObject.name} nie posiada komponentu Health."
+                );
+
+                return;
+            }
+
+            health.OnDeath += Die;
         }
 
-        health.OnDeath += Die;
-    }
-
-    private void OnDestroy()
-    {
-        if (health != null)
+        private void OnDestroy()
         {
-            health.OnDeath -= Die;
+            if (health != null)
+            {
+                health.OnDeath -= Die;
+            }
         }
-    }
 
-    private void Die()
-    {
-        OnDied?.Invoke(enemyId);
+        private void Die()
+        {
+            OnDied?.Invoke(enemyId);
 
-        Destroy(gameObject);
+            Destroy(gameObject);
+        }
     }
 }

@@ -1,56 +1,60 @@
 using System;
 using UnityEngine;
 
-public class Health : MonoBehaviour
+namespace Arkanor.Characters
 {
-    [SerializeField]
-    private CharacterStats stats;
 
-    private int currentHealth;
-
-    public int CurrentHealth => currentHealth;
-
-    public bool IsDead => currentHealth <= 0;
-
-    public event Action<int, int> OnHealthChanged;
-    public event Action OnDeath;
-
-
-    private void Awake()
+    public class Health : MonoBehaviour
     {
-        if (stats == null)
-            stats = GetComponent<CharacterStats>();
+        [SerializeField]
+        private CharacterStats stats;
 
-    }
+        private int currentHealth;
 
-    private void Start()
-    {
-        currentHealth = (int)stats.MaxHealth.Value;
-    }
+        public int CurrentHealth => currentHealth;
 
-    public void Damage(int damage)
-    {
-        if (IsDead)
-            return;
+        public bool IsDead => currentHealth <= 0;
 
-        int finalDamage = Mathf.Max(1, damage - (int)stats.Defense.Value);
+        public event Action<int, int> OnHealthChanged;
+        public event Action OnDeath;
 
-        currentHealth = Mathf.Max(0, currentHealth - finalDamage);
 
-        OnHealthChanged?.Invoke(currentHealth, (int)stats.MaxHealth.Value);
+        private void Awake()
+        {
+            if (stats == null)
+                stats = GetComponent<CharacterStats>();
 
-        Debug.Log($"{gameObject.name} otrzymał {finalDamage} obrażeń");
+        }
 
-        if (IsDead)
-            OnDeath?.Invoke();
-    }
+        private void Start()
+        {
+            currentHealth = (int)stats.MaxHealth.Value;
+        }
 
-    public void Heal(int amount)
-    {
-        currentHealth = Mathf.Min(
-            currentHealth + amount,
-            (int)stats.MaxHealth.Value);
+        public void Damage(int damage)
+        {
+            if (IsDead)
+                return;
 
-        OnHealthChanged?.Invoke(currentHealth, (int)stats.MaxHealth.Value);
+            int finalDamage = Mathf.Max(1, damage - (int)stats.Defense.Value);
+
+            currentHealth = Mathf.Max(0, currentHealth - finalDamage);
+
+            OnHealthChanged?.Invoke(currentHealth, (int)stats.MaxHealth.Value);
+
+            Debug.Log($"{gameObject.name} otrzymał {finalDamage} obrażeń");
+
+            if (IsDead)
+                OnDeath?.Invoke();
+        }
+
+        public void Heal(int amount)
+        {
+            currentHealth = Mathf.Min(
+                currentHealth + amount,
+                (int)stats.MaxHealth.Value);
+
+            OnHealthChanged?.Invoke(currentHealth, (int)stats.MaxHealth.Value);
+        }
     }
 }

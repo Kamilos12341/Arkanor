@@ -1,58 +1,62 @@
 using UnityEngine;
 
-public class NPCAnimator : MonoBehaviour
+namespace Arkanor.NPC
 {
-    private Animator animator;
 
-    private int currentDirection = 0;
-
-    private void Awake()
+    public class NPCAnimator : MonoBehaviour
     {
-        animator = GetComponent<Animator>();
-    }
+        private Animator animator;
 
-    public void FaceDirection(Vector2 direction)
-    {
-        int newDirection;
+        private int currentDirection = 0;
 
-        if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
+        private void Awake()
         {
-            if (direction.x > 0)
+            animator = GetComponent<Animator>();
+        }
+
+        public void FaceDirection(Vector2 direction)
+        {
+            int newDirection;
+
+            if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
             {
-                newDirection = 2; // Right
+                if (direction.x > 0)
+                {
+                    newDirection = 2; // Right
+                }
+                else
+                {
+                    newDirection = 1; // Left
+                }
             }
             else
             {
-                newDirection = 1; // Left
+                if (direction.y > 0)
+                {
+                    newDirection = 3; // Up
+                }
+                else
+                {
+                    newDirection = 0; // Down
+                }
             }
+
+            if (newDirection == currentDirection)
+                return;
+
+            currentDirection = newDirection;
+
+            animator.SetInteger("Direction", currentDirection);
         }
-        else
+
+        public void FacePlayer(Transform player, Transform npc)
         {
-            if (direction.y > 0)
-            {
-                newDirection = 3; // Up
-            }
-            else
-            {
-                newDirection = 0; // Down
-            }
+            if (player == null || npc == null)
+                return;
+
+            Vector2 direction = player.position - npc.position;
+
+            FaceDirection(direction);
         }
-
-        if (newDirection == currentDirection)
-            return;
-
-        currentDirection = newDirection;
-
-        animator.SetInteger("Direction", currentDirection);
-    }
-
-    public void FacePlayer(Transform player, Transform npc)
-    {
-        if (player == null || npc == null)
-            return;
-
-        Vector2 direction = player.position - npc.position;
-
-        FaceDirection(direction);
     }
 }
