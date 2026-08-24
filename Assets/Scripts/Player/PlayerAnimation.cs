@@ -8,6 +8,7 @@ namespace Arkanor.Player
     {
         private Animator animator;
         private PlayerMovement movement;
+        private Combat combat;
 
         private Vector2 lastDirection = Vector2.down;
 
@@ -15,6 +16,7 @@ namespace Arkanor.Player
         {
             animator = GetComponent<Animator>();
             movement = GetComponent<PlayerMovement>();
+            combat = GetComponent<Combat>();
         }
 
         private void Update()
@@ -25,10 +27,15 @@ namespace Arkanor.Player
 
             animator.SetBool("IsMoving", isMoving);
 
+            animator.SetBool(
+                "IsAttacking",
+                combat != null && combat.IsAttacking
+            );
+
             animator.SetFloat("MoveX", move.x);
             animator.SetFloat("MoveY", move.y);
 
-            if (isMoving)
+            if (isMoving && (combat == null || !combat.IsAttacking))
             {
                 lastDirection = move;
 

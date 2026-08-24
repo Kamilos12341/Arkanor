@@ -10,11 +10,13 @@ namespace Arkanor.Player
         [SerializeField] private float attackRange = 1.2f;
         [SerializeField] private float attackWidth = 0.8f;
         [SerializeField] private float attackCooldown = 0.5f;
+        [SerializeField] private float attackDuration = 0.2f;
 
         [Header("Target")]
         [SerializeField] private LayerMask targetLayer;
 
         private float attackTimer;
+        private float attackDurationTimer;
 
         private CharacterStats stats;
         private PlayerMovement playerMovement;
@@ -23,6 +25,14 @@ namespace Arkanor.Player
         private Vector2 facingDirection = Vector2.down;
 
         //private Animator animator;
+
+        private bool isAttacking;
+
+        public bool IsAttacking => isAttacking;
+
+        public Vector2 FacingDirection => facingDirection;
+
+        private Vector2 attackDirection = Vector2.down;
 
         private void Awake()
         {
@@ -42,9 +52,20 @@ namespace Arkanor.Player
                 attackTimer -= Time.deltaTime;
             }
 
+            if (attackDurationTimer > 0f)
+            {
+                attackDurationTimer -= Time.deltaTime;
+
+                if (attackDurationTimer <= 0f)
+                {
+                    isAttacking = false;
+                    playerMovement.CanMove = true;
+                }
+            }
+
             if (input.Attack.WasPressedThisFrame())
             {
-                TryAttack();
+                TryStartAttack();
             }
         }
 
@@ -58,13 +79,26 @@ namespace Arkanor.Player
             }
         }
 
-        private void TryAttack()
+        private void TryStartAttack()
         {
             if (attackTimer > 0f)
                 return;
 
-            attackTimer = attackCooldown;
+            if (isAttacking)
+                return;
 
+            isAttacking = true;
+
+            playerMovement.CanMove = false;
+
+            attackTimer = attackCooldown;
+            attackDurationTimer = attackDuration;
+
+            PerformAttack();
+        }
+
+        private void PerformAttack()
+        {
             Vector2 attackCenter =
                 (Vector2)transform.position +
                 facingDirection * attackRange * 0.5f;
@@ -108,8 +142,6 @@ namespace Arkanor.Player
                     $"{(int)stats.Attack.Value} obrażeń."
                 );
             }
-
-            // animator.SetTrigger("Attack");
         }
 
         private void OnDrawGizmosSelected()
