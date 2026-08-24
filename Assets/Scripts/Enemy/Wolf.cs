@@ -1,5 +1,6 @@
 using UnityEngine;
 using Arkanor.Characters;
+using Arkanor.Player;
 
 namespace Arkanor.Enemies
 {
@@ -33,17 +34,16 @@ namespace Arkanor.Enemies
 
         private void Start()
         {
-            GameObject playerObject =
-                GameObject.FindGameObjectWithTag("Player");
+            if (PlayerReference.Instance == null)
+            {
+                Debug.LogWarning(
+                    "Wolf nie znalazł PlayerReference."
+                );
 
-            if (playerObject != null)
-            {
-                player = playerObject.transform;
+                return;
             }
-            else
-            {
-                Debug.LogWarning("Wolf nie znalazł Playera.");
-            }
+
+            player = PlayerReference.Instance.Transform;
         }
 
         private void Update()
