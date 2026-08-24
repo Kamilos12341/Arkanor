@@ -7,7 +7,6 @@ namespace Arkanor.Player
 {
     public class PlayerInteraction : MonoBehaviour
     {
-        [SerializeField] private float interactionRadius = 1.2f;
         [SerializeField] private LayerMask interactionLayer;
 
         private IInteractable currentInteractable;
@@ -19,11 +18,14 @@ namespace Arkanor.Player
 
         private NPCController currentNPC;
 
+        private InteractionDetector interactionDetector;
+
         private void Awake()
         {
             playerMovement = GetComponent<PlayerMovement>();
             input = GetComponent<PlayerInputHandler>();
             dialogueManager = FindFirstObjectByType<DialogueManager>();
+            interactionDetector = GetComponentInChildren<InteractionDetector>();
         }
 
         private void Start()
@@ -88,59 +90,39 @@ namespace Arkanor.Player
 
         private void FindInteractable()
         {
-            Collider2D[] hits = Physics2D.OverlapCircleAll(
-                transform.position,
-                interactionRadius,
-                interactionLayer
-            );
+            if (interactionDetector == null)
+                return;
 
-            IInteractable nearestInteractable = null;
+            IInteractable nearestInteractable =
+                interactionDetector.GetNearestInteractable();
+
             InteractionPrompt nearestPrompt = null;
             NPCController nearestNPC = null;
 
-            float nearestDistance = float.MaxValue;
-
-            foreach (Collider2D hit in hits)
+            if (nearestInteractable is MonoBehaviour interactableObject)
             {
-                IInteractable interactable =
-                    hit.GetComponent<IInteractable>();
+                nearestPrompt =
+                    interactableObject.GetComponent<InteractionPrompt>();
 
-                if (interactable == null)
-                    continue;
-
-                float distance = Vector2.Distance(
-                    transform.position,
-                    hit.transform.position
-                );
-
-                if (distance < nearestDistance)
-                {
-                    nearestDistance = distance;
-                    nearestInteractable = interactable;
-
-                    nearestPrompt =
-                        hit.GetComponent<InteractionPrompt>();
-
-                    nearestNPC =
-                        hit.GetComponent<NPCController>();
-                }
+                nearestNPC =
+                    interactableObject.GetComponent<NPCController>();
             }
 
-            if (nearestInteractable != currentInteractable)
+            if (nearestInteractable == currentInteractable)
+                return;
+
+            if (currentPrompt != null)
             {
-                if (currentPrompt != null)
-                {
-                    currentPrompt.Hide();
-                }
+                currentPrompt.Hide();
+            }
 
-                currentInteractable = nearestInteractable;
-                currentPrompt = nearestPrompt;
-                currentNPC = nearestNPC;
+            currentInteractable = nearestInteractable;
+            currentPrompt = nearestPrompt;
+            currentNPC = nearestNPC;
 
-                if (currentPrompt != null)
-                {
-                    currentPrompt.Show();
-                }
+            if (currentPrompt != null)
+            {
+                currentPrompt.Show();
             }
         }
 
@@ -175,16 +157,6 @@ namespace Arkanor.Player
             {
                 currentInteractable.Interact();
             }
-        }
-
-        private void OnDrawGizmosSelected()
-        {
-            Gizmos.color = Color.yellow;
-
-            Gizmos.DrawWireSphere(
-                transform.position,
-                interactionRadius
-            );
         }
     }
 }
