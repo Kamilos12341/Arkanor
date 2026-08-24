@@ -24,7 +24,7 @@ namespace Arkanor.Player
         {
             playerMovement = GetComponent<PlayerMovement>();
             input = GetComponent<PlayerInputHandler>();
-            dialogueManager = FindFirstObjectByType<DialogueManager>();
+            dialogueManager = DialogueManager.Instance;
             interactionDetector = GetComponentInChildren<InteractionDetector>();
         }
 

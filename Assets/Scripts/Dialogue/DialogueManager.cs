@@ -6,6 +6,8 @@ namespace Arkanor.Dialogue
 {
     public class DialogueManager : MonoBehaviour
     {
+
+        public static DialogueManager Instance { get; private set; }
         [SerializeField] private GameObject dialogueWindow;
         [SerializeField] private TMP_Text npcNameText;
         [SerializeField] private TMP_Text dialogueText;
@@ -25,6 +27,16 @@ namespace Arkanor.Dialogue
             dialogueWindow.SetActive(false);
         }
 
+        private void Awake()
+        {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+
+            Instance = this;
+        }
         public void StartDialogue(
             string npcName,
             string[] lines,

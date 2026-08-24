@@ -27,7 +27,7 @@ namespace Arkanor.NPC
 
         private void Start()
         {
-            dialogueManager = FindFirstObjectByType<DialogueManager>();
+            dialogueManager = DialogueManager.Instance;
             npcAnimator = GetComponentInChildren<NPCAnimator>();
         }
 
