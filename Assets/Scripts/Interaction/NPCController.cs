@@ -26,6 +26,8 @@ namespace Arkanor.NPC
         private DialogueManager dialogueManager;
         private NPCAnimator npcAnimator;
 
+        public NPCAnimator Animator => npcAnimator;
+
         private void Start()
         {
             dialogueManager = DialogueManager.Instance;

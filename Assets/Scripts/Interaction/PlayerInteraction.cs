@@ -139,8 +139,7 @@ namespace Arkanor.Player
             if (currentNPC == null)
                 return;
 
-            NPCAnimator npcAnimator =
-                currentNPC.GetComponentInChildren<NPCAnimator>();
+            NPCAnimator npcAnimator = currentNPC.Animator;
 
             if (npcAnimator == null)
                 return;

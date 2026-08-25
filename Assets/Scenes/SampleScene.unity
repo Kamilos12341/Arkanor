@@ -4525,6 +4525,7 @@ MonoBehaviour:
   attackRange: 1.2
   attackWidth: 0.8
   attackCooldown: 0.5
+  attackDuration: 0.2
   targetLayer:
     serializedVersion: 2
     m_Bits: 8
@@ -4586,17 +4587,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NPC
   npcName: Alden
-  defaultDialogue:
-    lines:
-    - "Wilki coraz cz\u0119\u015Bciej pojawiaj\u0105 si\u0119 przy drodze."
-    - "Je\u015Bli mo\u017Cesz, pozb\u0105d\u017A si\u0119 trzech z nich."
-  activeQuestDialogue:
-    lines:
-    - "Uda\u0142o ci si\u0119 ju\u017C rozprawi\u0107 z wilkami?"
-  completedQuestDialogue:
-    lines:
-    - "S\u0142ysza\u0142em, \u017Ce droga jest ju\u017C spokojniejsza."
-    - "Dobra robota. Wiedzia\u0142em, \u017Ce mo\u017Cna na ciebie liczy\u0107."
+  defaultDialogue: {fileID: 11400000, guid: 320d39658c931f741b29936c6855bea0, type: 2}
+  activeQuestDialogue: {fileID: 11400000, guid: 14fdc05411c62a24d8d23186ae220b3b,
+    type: 2}
+  completedQuestDialogue: {fileID: 11400000, guid: 375cfbad34ddeb14c9a44fc333d8ef7d,
+    type: 2}
   questToStartID: kill_wolves_01
 --- !u!61 &431177151
 BoxCollider2D:
