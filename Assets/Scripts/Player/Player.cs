@@ -1,24 +1,39 @@
 using UnityEngine;
 using Arkanor.Characters;
 
-public class Player : MonoBehaviour
+namespace Arkanor.Player
 {
-    private Health health;
-
-    private void Awake()
+    public class Player : MonoBehaviour
     {
-        health = GetComponent<Health>();
+        private Health health;
 
-        health.OnDeath += OnDeath;
-    }
+        private void Awake()
+        {
+            health = GetComponent<Health>();
 
-    private void OnDestroy()
-    {
-        health.OnDeath -= OnDeath;
-    }
+            if (health == null)
+            {
+                Debug.LogError(
+                    $"{gameObject.name} nie posiada komponentu Health."
+                );
 
-    private void OnDeath()
-    {
-        Debug.Log("Game Over");
+                return;
+            }
+
+            health.OnDeath += OnDeath;
+        }
+
+        private void OnDestroy()
+        {
+            if (health != null)
+            {
+                health.OnDeath -= OnDeath;
+            }
+        }
+
+        private void OnDeath()
+        {
+            Debug.Log("Game Over");
+        }
     }
 }

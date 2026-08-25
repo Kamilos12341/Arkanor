@@ -75,21 +75,6 @@ namespace Arkanor.Quests
             Debug.Log($"Quest rozpoczęty: {quest.Title}");
         }
 
-        public void AddProgress(string id, int amount)
-        {
-            Quest quest = GetQuest(id);
-
-            if (quest == null)
-                return;
-
-            quest.AddProgress(amount);
-
-            Debug.Log(
-                $"Postęp questa {quest.Title}: " +
-                $"{quest.CurrentAmount}/{quest.RequiredAmount}"
-            );
-        }
-
         public bool CompleteQuest(string id)
         {
             Quest quest = GetQuest(id);

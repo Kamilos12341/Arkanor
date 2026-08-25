@@ -1,6 +1,7 @@
 using UnityEngine;
 using Arkanor.Quests;
 using Arkanor.Dialogue;
+using Arkanor.Interaction;
 
 namespace Arkanor.NPC
 {

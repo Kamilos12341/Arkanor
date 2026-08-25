@@ -2,6 +2,7 @@ using UnityEngine;
 using Arkanor.NPC;
 using Arkanor.Dialogue;
 using Arkanor.UI;
+using Arkanor.Interaction;
 
 namespace Arkanor.Player
 {
@@ -24,12 +25,15 @@ namespace Arkanor.Player
         {
             playerMovement = GetComponent<PlayerMovement>();
             input = GetComponent<PlayerInputHandler>();
-            dialogueManager = DialogueManager.Instance;
             interactionDetector = GetComponentInChildren<InteractionDetector>();
         }
 
+
+
         private void Start()
         {
+            dialogueManager = DialogueManager.Instance;
+
             if (dialogueManager == null)
             {
                 Debug.LogError(
@@ -78,14 +82,18 @@ namespace Arkanor.Player
 
         private void OnDialogueOpened()
         {
-            playerMovement.CanMove = false;
+            playerMovement.LockMovement(
+                PlayerMovement.MovementLockReason.Dialogue
+            );
 
             HideCurrentPrompt();
         }
 
         private void OnDialogueClosed()
         {
-            playerMovement.CanMove = true;
+            playerMovement.UnlockMovement(
+                PlayerMovement.MovementLockReason.Dialogue
+            );
         }
 
         private void FindInteractable()

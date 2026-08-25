@@ -59,7 +59,9 @@ namespace Arkanor.Player
                 if (attackDurationTimer <= 0f)
                 {
                     isAttacking = false;
-                    playerMovement.CanMove = true;
+                    playerMovement.UnlockMovement(
+                        PlayerMovement.MovementLockReason.Attack
+                );
                 }
             }
 
@@ -89,7 +91,9 @@ namespace Arkanor.Player
 
             isAttacking = true;
 
-            playerMovement.CanMove = false;
+            playerMovement.LockMovement(
+                PlayerMovement.MovementLockReason.Attack
+            );
 
             attackTimer = attackCooldown;
             attackDurationTimer = attackDuration;
