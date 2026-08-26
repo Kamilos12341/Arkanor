@@ -2,10 +2,7 @@ using System;
 using System.Collections.Generic;
 
 namespace Arkanor.Characters
-{
-
-    [Serializable]
-    public class CharacterStat
+{  public class CharacterStat
     {
         private float baseValue;
 

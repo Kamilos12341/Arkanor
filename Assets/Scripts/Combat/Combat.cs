@@ -23,9 +23,6 @@ namespace Arkanor.Player
         private PlayerInputHandler input;
 
         private Vector2 facingDirection = Vector2.down;
-
-        //private Animator animator;
-
         private bool isAttacking;
 
         public bool IsAttacking => isAttacking;
@@ -39,8 +36,6 @@ namespace Arkanor.Player
             stats = GetComponent<CharacterStats>();
             playerMovement = GetComponent<PlayerMovement>();
             input = GetComponent<PlayerInputHandler>();
-
-            //animator = GetComponent<Animator>();
         }
 
         private void Update()

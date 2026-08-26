@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42fcfe1ad7d644e41a604cce0ddd3e31, type: 3}
   m_Name: KillWolves01
   m_EditorClassIdentifier: Assembly-CSharp::Arkanor.Quests.QuestDefinition
-  ID: 
-  Title: 
-  Description: 
-  TargetID: 
-  RequiredAmount: 0
+  ID: kill_wolves_01
+  Title: Wilki na drodze
+  Description: "Pokonaj 3 wilki, kt\xF3re zagra\u017Caj\u0105 podr\xF3\u017Cnym"
+  TargetID: wolf
+  RequiredAmount: 3

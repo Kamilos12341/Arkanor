@@ -2,7 +2,6 @@ using System;
 
 namespace Arkanor.Characters
 {
-    [Serializable]
     public class StatModifier
     {
         public float Value { get; }
