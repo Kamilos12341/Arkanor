@@ -1,38 +1,31 @@
-using System;
-
 namespace Arkanor.Quests
 {
-
-    [Serializable]
     public class Quest
     {
-        public string ID;
-        public string Title;
-        public string Description;
+        public string ID { get; private set; }
+        public string Title { get; private set; }
+        public string Description { get; private set; }
 
-        public QuestState State;
+        public QuestState State { get; private set; }
 
-        public int CurrentAmount;
-        public int RequiredAmount;
+        public int CurrentAmount { get; private set; }
+        public int RequiredAmount { get; private set; }
 
-        public string TargetID;
+        public string TargetID { get; private set; }
 
-        public Quest(
-         string id,
-         string title,
-         string description,
-         string targetID,
-         int requiredAmount)
+        public Quest(QuestDefinition definition)
         {
-            ID = id;
-            Title = title;
-            Description = description;
+            if (definition == null)
+                return;
 
-            TargetID = targetID;
+            ID = definition.ID;
+            Title = definition.Title;
+            Description = definition.Description;
 
-            RequiredAmount = requiredAmount;
+            TargetID = definition.TargetID;
+            RequiredAmount = definition.RequiredAmount;
+
             CurrentAmount = 0;
-
             State = QuestState.NotStarted;
         }
 
@@ -48,6 +41,23 @@ namespace Arkanor.Quests
                 CurrentAmount = RequiredAmount;
                 State = QuestState.Completed;
             }
+        }
+
+        public void Start()
+        {
+            if (State != QuestState.NotStarted)
+                return;
+
+            State = QuestState.Active;
+        }
+
+        public bool Complete()
+        {
+            if (State != QuestState.Completed)
+                return false;
+
+            State = QuestState.Rewarded;
+            return true;
         }
     }
 }

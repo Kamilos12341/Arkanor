@@ -8,7 +8,11 @@ namespace Arkanor.Quests
     {
         public static QuestManager Instance { get; private set; }
 
+        [SerializeField] private QuestDefinition[] questDefinitions;
+
         private Dictionary<string, Quest> quests = new();
+
+
 
         private void Awake()
         {
@@ -28,15 +32,15 @@ namespace Arkanor.Quests
 
         private void CreateQuests()
         {
-            Quest wolfQuest = new Quest(
-                "kill_wolves_01",
-                "Wilki na drodze",
-                "Pokonaj 3 wilki, które zagrażają podróżnym.",
-                "wolf",
-                3
-            );
+            foreach (QuestDefinition definition in questDefinitions)
+            {
+                if (definition == null)
+                    continue;
 
-            AddQuest(wolfQuest);
+                Quest quest = new Quest(definition);
+
+                AddQuest(quest);
+            }
         }
 
         public void AddQuest(Quest quest)
@@ -70,7 +74,7 @@ namespace Arkanor.Quests
             if (quest.State != QuestState.NotStarted)
                 return;
 
-            quest.State = QuestState.Active;
+            quest.Start();
 
             Debug.Log($"Quest rozpoczęty: {quest.Title}");
         }
@@ -82,10 +86,8 @@ namespace Arkanor.Quests
             if (quest == null)
                 return false;
 
-            if (quest.State != QuestState.Completed)
+            if (!quest.Complete())
                 return false;
-
-            quest.State = QuestState.Rewarded;
 
             Debug.Log($"Quest ukończony i odebrany: {quest.Title}");
 
