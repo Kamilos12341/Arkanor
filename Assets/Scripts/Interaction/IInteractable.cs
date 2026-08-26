@@ -1,4 +1,7 @@
-public interface IInteractable
+namespace Arkanor.Interaction
 {
-    void Interact();
+    public interface IInteractable
+    {
+        void Interact();
+    }
 }

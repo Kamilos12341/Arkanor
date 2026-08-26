@@ -2,7 +2,6 @@ using UnityEngine;
 
 namespace Arkanor.Characters
 {
-
     public class CharacterStats : MonoBehaviour
     {
         [Header("Base Stats")]
@@ -11,12 +10,12 @@ namespace Arkanor.Characters
         [SerializeField] private int defense = 5;
         [SerializeField] private float moveSpeed = 5f;
 
-
-
         public CharacterStat MaxHealth { get; private set; }
         public CharacterStat Attack { get; private set; }
         public CharacterStat Defense { get; private set; }
         public CharacterStat MoveSpeed { get; private set; }
+
+        public bool IsInitialized { get; private set; }
 
         private void Awake()
         {
@@ -25,10 +24,15 @@ namespace Arkanor.Characters
 
         public void Initialize()
         {
+            if (IsInitialized)
+                return;
+
             MaxHealth = new CharacterStat(maxHealth);
             Attack = new CharacterStat(attack);
             Defense = new CharacterStat(defense);
             MoveSpeed = new CharacterStat(moveSpeed);
+
+            IsInitialized = true;
         }
     }
 }

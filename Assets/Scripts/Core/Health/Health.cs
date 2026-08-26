@@ -24,10 +24,17 @@ namespace Arkanor.Characters
             if (stats == null)
                 stats = GetComponent<CharacterStats>();
 
-        }
+            if (stats == null)
+            {
+                Debug.LogError(
+                    $"{gameObject.name} nie posiada komponentu CharacterStats."
+                );
 
-        private void Start()
-        {
+                return;
+            }
+
+            stats.Initialize();
+
             currentHealth = (int)stats.MaxHealth.Value;
         }
 

@@ -1,6 +1,7 @@
 using UnityEngine;
 using Arkanor.Quests;
 using Arkanor.Dialogue;
+using Arkanor.Interaction;
 
 namespace Arkanor.NPC
 {
@@ -24,6 +25,8 @@ namespace Arkanor.NPC
 
         private DialogueManager dialogueManager;
         private NPCAnimator npcAnimator;
+
+        public NPCAnimator Animator => npcAnimator;
 
         private void Start()
         {

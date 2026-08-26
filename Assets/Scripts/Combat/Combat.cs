@@ -23,9 +23,6 @@ namespace Arkanor.Player
         private PlayerInputHandler input;
 
         private Vector2 facingDirection = Vector2.down;
-
-        //private Animator animator;
-
         private bool isAttacking;
 
         public bool IsAttacking => isAttacking;
@@ -39,8 +36,6 @@ namespace Arkanor.Player
             stats = GetComponent<CharacterStats>();
             playerMovement = GetComponent<PlayerMovement>();
             input = GetComponent<PlayerInputHandler>();
-
-            //animator = GetComponent<Animator>();
         }
 
         private void Update()
@@ -59,7 +54,9 @@ namespace Arkanor.Player
                 if (attackDurationTimer <= 0f)
                 {
                     isAttacking = false;
-                    playerMovement.CanMove = true;
+                    playerMovement.UnlockMovement(
+                        PlayerMovement.MovementLockReason.Attack
+                );
                 }
             }
 
@@ -89,7 +86,9 @@ namespace Arkanor.Player
 
             isAttacking = true;
 
-            playerMovement.CanMove = false;
+            playerMovement.LockMovement(
+                PlayerMovement.MovementLockReason.Attack
+            );
 
             attackTimer = attackCooldown;
             attackDurationTimer = attackDuration;

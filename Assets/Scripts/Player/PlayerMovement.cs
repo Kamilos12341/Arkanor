@@ -23,7 +23,31 @@ namespace Arkanor.Player
 
         private AxisPriority lastPriority = AxisPriority.Vertical;
 
-        public bool CanMove { get; set; } = true;
+        [System.Flags]
+        public enum MovementLockReason
+        {
+            None = 0,
+            Dialogue = 1 << 0,
+            Attack = 1 << 1,
+            Stun = 1 << 2,
+            Dead = 1 << 3,
+            Cutscene = 1 << 4
+        }
+
+        private MovementLockReason movementLocks;
+
+        public bool CanMove =>
+            movementLocks == MovementLockReason.None;
+
+        public void LockMovement(MovementLockReason reason)
+        {
+            movementLocks |= reason;
+        }
+
+        public void UnlockMovement(MovementLockReason reason)
+        {
+            movementLocks &= ~reason;
+        }
 
         private void Awake()
      

@@ -1,11 +1,12 @@
-using System;
 using UnityEngine;
 
-namespace Arkanor.NPC
+namespace Arkanor.Dialogue
 {
-
-    [Serializable]
-    public class NPCDialogue
+    [CreateAssetMenu(
+        fileName = "NewNPCDialogue",
+        menuName = "Arkanor/Dialogue/NPC Dialogue"
+    )]
+    public class NPCDialogue : ScriptableObject
     {
         [TextArea(2, 5)]
         public string[] lines;
