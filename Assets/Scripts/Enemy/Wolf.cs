@@ -1,6 +1,7 @@
-using UnityEngine;
 using Arkanor.Characters;
+using Arkanor.Combat;
 using Arkanor.Player;
+using UnityEngine;
 
 namespace Arkanor.Enemies
 {
@@ -22,6 +23,8 @@ namespace Arkanor.Enemies
 
         private CharacterStats stats;
 
+        private Knockback knockback;
+
         private Vector2 movement;
 
         private void Awake()
@@ -30,6 +33,7 @@ namespace Arkanor.Enemies
             spriteRenderer = GetComponent<SpriteRenderer>();
             animator = GetComponent<Animator>();
             stats = GetComponent<CharacterStats>();
+            knockback = GetComponent<Knockback>();
         }
 
         private void Start()
@@ -76,6 +80,9 @@ namespace Arkanor.Enemies
 
         private void FixedUpdate()
         {
+            if (knockback != null && knockback.IsKnockedBack)
+                return;
+
             rb.linearVelocity =
                 movement * stats.MoveSpeed.Value;
         }
@@ -121,8 +128,12 @@ namespace Arkanor.Enemies
                 return;
             }
 
+            Vector2 hitDirection =
+                (player.position - transform.position).normalized;
+
             playerHealth.Damage(
-                (int)stats.Attack.Value
+                (int)stats.Attack.Value,
+                hitDirection
             );
 
             Debug.Log(
