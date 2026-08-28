@@ -15,6 +15,7 @@ namespace Arkanor.Player
 
         public InputAction Interact => input.Player.Interact;
         public InputAction Attack => input.Player.Attack;
+        public InputAction Inventory => input.Player.Inventory;
 
         private void Awake()
         {

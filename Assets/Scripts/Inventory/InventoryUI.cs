@@ -1,3 +1,4 @@
+using Arkanor.Player;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -11,11 +12,15 @@ namespace Arkanor.Inventory
         [SerializeField] private Inventory inventory;
         [SerializeField] private Transform slotContainer;
         [SerializeField] private GameObject slotPrefab;
+        [SerializeField] private ItemTooltip tooltip;
 
+        private PlayerInputHandler input;
         private readonly List<GameObject> slotObjects = new();
 
         private void Awake()
         {
+            input = FindFirstObjectByType<PlayerInputHandler>();
+
             if (inventory == null)
                 inventory = FindFirstObjectByType<Inventory>();
 
@@ -27,8 +32,6 @@ namespace Arkanor.Inventory
 
                 return;
             }
-
-            inventory.InitializeSlots();
 
             CreateSlots();
             Refresh();
@@ -80,8 +83,40 @@ namespace Arkanor.Inventory
 
                 slot.name = $"InventorySlot_{i}";
 
+                Button button = slot.GetComponent<Button>();
+
+                if (button != null)
+                {
+                    int slotIndex = i;
+                    button.onClick.AddListener(() => UseSlot(slotIndex));
+                }
+                else
+                {
+                    Debug.LogWarning(
+                        $"Slot {slot.name} nie posiada komponentu Button."
+                    );
+                }
+
+                InventorySlotUI slotUI =
+                   slot.GetComponent<InventorySlotUI>();
+
+                if (slotUI != null)
+                    slotUI.Initialize(tooltip);
+
                 slotObjects.Add(slot);
+
+               
             }
+        }
+
+        private void UseSlot(int slotIndex)
+        {
+            if (input == null)
+                return;
+
+            GameObject player = input.gameObject;
+
+            inventory.UseItem(slotIndex, player);
         }
 
         public void Refresh()
@@ -93,6 +128,9 @@ namespace Arkanor.Inventory
             {
                 Inventory.InventorySlot inventorySlot =
                     inventory.Slots[i];
+
+                InventorySlotUI slotUI =
+                    slotObjects[i].GetComponent<InventorySlotUI>();
 
                 Transform iconTransform =
                     slotObjects[i].transform.Find("Icon");
@@ -116,11 +154,13 @@ namespace Arkanor.Inventory
 
                 TMP_Text amountText =
                     amountTransform.GetComponent<TMP_Text>();
-
                 if (inventorySlot.IsEmpty)
                 {
                     icon.enabled = false;
                     amountText.text = "";
+
+                    if (slotUI != null)
+                        slotUI.SetItem(null);
                 }
                 else
                 {
@@ -131,6 +171,9 @@ namespace Arkanor.Inventory
                         inventorySlot.Amount > 1
                             ? inventorySlot.Amount.ToString()
                             : "";
+
+                    if (slotUI != null)
+                        slotUI.SetItem(inventorySlot.Item);
                 }
             }
         }

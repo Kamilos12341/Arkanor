@@ -15,7 +15,7 @@ namespace Arkanor.Inventory
         }
 
         [Header("Inventory")]
-        [SerializeField] private int capacity = 20;
+        [SerializeField, Min(1)] private int capacity = 20;
 
         [SerializeField]
         private List<InventorySlot> slots = new();
@@ -53,6 +53,7 @@ namespace Arkanor.Inventory
 
             if (GetFreeSpace(item) < amount)
                 return false;
+
 
             int remaining = amount;
 
@@ -186,6 +187,35 @@ namespace Arkanor.Inventory
             }
 
             return freeSpace;
+        }
+
+        public bool UseItem(int slotIndex, GameObject user)
+        {
+            if (slotIndex < 0 || slotIndex >= slots.Count)
+                return false;
+
+            InventorySlot slot = slots[slotIndex];
+
+            if (slot.IsEmpty)
+                return false;
+
+            if (slot.Item.UseEffect == null)
+                return false;
+
+            if (!slot.Item.UseEffect.Use(user))
+                return false;
+
+            slot.Amount--;
+
+            if (slot.Amount <= 0)
+            {
+                slot.Item = null;
+                slot.Amount = 0;
+            }
+
+            OnInventoryChanged?.Invoke();
+
+            return true;
         }
     }
 }

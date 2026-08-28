@@ -15,7 +15,10 @@ namespace Arkanor.Characters
         private int currentHealth;
 
         public int CurrentHealth => currentHealth;
-
+        public int MaxHealth =>
+            stats != null
+                ? (int)stats.MaxHealth.Value
+                : 0;
         public bool IsDead => currentHealth <= 0;
 
         public event Action<int, int> OnHealthChanged;

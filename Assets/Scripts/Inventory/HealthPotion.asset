@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Arkanor.Inventory.ItemDefinition
   itemId: health_potion
   itemName: Mikstura zdrowia
-  description: Przywraca zdrowie.
+  description: Przywraca 25 zdrowia.
   icon: {fileID: 4606908045521496030, guid: 763bbc45c72672c4dbc3c5dcc89c5943, type: 3}
   maxStack: 10
+  useEffect: {fileID: 11400000, guid: c997261d238ca4a44b690c7d7c741ec8, type: 2}

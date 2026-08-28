@@ -18,12 +18,18 @@ namespace Arkanor.Inventory
         [SerializeField] private Sprite icon;
 
         [Header("Stack")]
-        [SerializeField] private int maxStack = 1;
+        [SerializeField, Min(1)] private int maxStack = 1;
+
+        [Header("Use Effect")]
+        public ItemUseEffect UseEffect => useEffect;
 
         public string ItemId => itemId;
         public string ItemName => itemName;
         public string Description => description;
         public Sprite Icon => icon;
         public int MaxStack => maxStack;
+        [SerializeField] private ItemUseEffect useEffect;
+
+        
     }
 }
