@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Arkanor.Characters;
+using Arkanor.Combat;
 
 namespace Arkanor.Player
 {
@@ -14,6 +15,8 @@ namespace Arkanor.Player
         private Vector2 movement;
 
         public Vector2 Movement => movement;
+
+        private Knockback knockback;
 
         private enum AxisPriority
         {
@@ -50,11 +53,11 @@ namespace Arkanor.Player
         }
 
         private void Awake()
-     
         {
             rb = GetComponent<Rigidbody2D>();
             stats = GetComponent<CharacterStats>();
             input = GetComponent<PlayerInputHandler>();
+            knockback = GetComponent<Knockback>();
         }
 
         private void Start()
@@ -110,6 +113,9 @@ namespace Arkanor.Player
 
         private void FixedUpdate()
         {
+            if (knockback != null && knockback.IsKnockedBack)
+                return;
+
             if (!CanMove)
             {
                 rb.linearVelocity = Vector2.zero;

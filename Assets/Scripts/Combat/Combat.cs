@@ -1,5 +1,6 @@
 using UnityEngine;
 using Arkanor.Characters;
+using Arkanor.Combat;
 
 namespace Arkanor.Player
 {
@@ -132,7 +133,8 @@ namespace Arkanor.Player
                     continue;
 
                 targetHealth.Damage(
-                    (int)stats.Attack.Value
+                    (int)stats.Attack.Value,
+                    facingDirection
                 );
 
                 Debug.Log(

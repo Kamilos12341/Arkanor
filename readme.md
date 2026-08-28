@@ -9,4 +9,5 @@
 * WASD lub klawisze strzałek - ruch postaci
 * E - interakcja
 * Spacja - atak
+* I - ekwipunek
 

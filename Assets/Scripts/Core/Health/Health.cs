@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using Arkanor.Combat;
 
 namespace Arkanor.Characters
 {
@@ -9,10 +10,15 @@ namespace Arkanor.Characters
         [SerializeField]
         private CharacterStats stats;
 
+        private Knockback knockback;
+
         private int currentHealth;
 
         public int CurrentHealth => currentHealth;
-
+        public int MaxHealth =>
+            stats != null
+                ? (int)stats.MaxHealth.Value
+                : 0;
         public bool IsDead => currentHealth <= 0;
 
         public event Action<int, int> OnHealthChanged;
@@ -23,6 +29,8 @@ namespace Arkanor.Characters
         {
             if (stats == null)
                 stats = GetComponent<CharacterStats>();
+
+            knockback = GetComponent<Knockback>();
 
             if (stats == null)
             {
@@ -38,18 +46,34 @@ namespace Arkanor.Characters
             currentHealth = (int)stats.MaxHealth.Value;
         }
 
-        public void Damage(int damage)
+        public void Damage(int damage, Vector2 hitDirection)
         {
             if (IsDead)
                 return;
 
-            int finalDamage = Mathf.Max(1, damage - (int)stats.Defense.Value);
+            int finalDamage = Mathf.Max(
+                1,
+                damage - (int)stats.Defense.Value
+            );
 
-            currentHealth = Mathf.Max(0, currentHealth - finalDamage);
+            currentHealth = Mathf.Max(
+                0,
+                currentHealth - finalDamage
+            );
 
-            OnHealthChanged?.Invoke(currentHealth, (int)stats.MaxHealth.Value);
+            OnHealthChanged?.Invoke(
+                currentHealth,
+                (int)stats.MaxHealth.Value
+            );
 
-            Debug.Log($"{gameObject.name} otrzymał {finalDamage} obrażeń");
+            Debug.Log(
+                $"{gameObject.name} otrzymał {finalDamage} obrażeń"
+            );
+
+            if (knockback != null && !IsDead)
+            {
+                knockback.Apply(hitDirection);
+            }
 
             if (IsDead)
                 OnDeath?.Invoke();
